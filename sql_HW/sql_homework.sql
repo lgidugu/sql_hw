@@ -140,24 +140,16 @@ WHERE
                     category
                 WHERE
                     name = 'Family'));
+
 #7e
 SELECT 
-    a.rental_id,
-    b.total,
-    a.amount,
-    (a.amount * b.total) AS rev_total
+    title, rental_duration
 FROM
-    ((SELECT 
-        rental_id, amount
-    FROM
-        payment) AS a
-    INNER JOIN (SELECT 
-        rental_id, COUNT(inventory_id) AS total
-    FROM
-        rental
-    GROUP BY inventory_id) AS b ON a.rental_id = b.rental_id)
-ORDER BY rev_total DESC
+    film
+ORDER BY rental_duration DESC
 LIMIT 5
+
+    
 
 #7g
 SELECT 
@@ -182,12 +174,49 @@ FROM
         country_id, country
     FROM
         country) AS e ON e.country_id = d.country_id);
+        
+#7h
+SELECT 
+    cat.name, SUM(amount) AS amt
+FROM
+    category cat
+        INNER JOIN
+    film_category fcat ON cat.category_id = fcat.category_id
+        INNER JOIN
+    inventory inv ON inv.film_id = fcat.film_id
+        INNER JOIN
+    rental ren ON ren.inventory_id = inv.inventory_id
+        INNER JOIN
+    payment pay ON pay.rental_id = ren.rental_id
+GROUP BY cat.name
+ORDER BY amt DESC
+LIMIT 5;
 
+#8a
+create view TOP_five_GenreList as
+SELECT 
+    cat.name, SUM(amount) AS amt
+FROM
+    category cat
+        INNER JOIN
+    film_category fcat ON cat.category_id = fcat.category_id
+        INNER JOIN
+    inventory inv ON inv.film_id = fcat.film_id
+        INNER JOIN
+    rental ren ON ren.inventory_id = inv.inventory_id
+        INNER JOIN
+    payment pay ON pay.rental_id = ren.rental_id
+GROUP BY cat.name
+ORDER BY amt DESC
+LIMIT 5;
 
+#8b
+select * from TOP_five_GenreList
 
+#8c
+drop view if exists Top_five_GenreList
 
-
-
+--
 
 
 
