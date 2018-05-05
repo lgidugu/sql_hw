@@ -50,7 +50,7 @@ set first_name = case when first_name = 'HARPO' then 'GROUCHO'
 	else 'MUCHO GROUCHO'
 end
 	where actor_id = 172;
-    
+   
 
 #5a
 create table address(
@@ -149,7 +149,14 @@ FROM
 ORDER BY rental_duration DESC
 LIMIT 5
 
-    
+#7f
+
+select b.store_id, sum(a.revenue) as "store_business in $"from
+(SELECT film_id, title, rental_duration, rental_duration*rental_rate as revenue
+FROM film group by title ORDER BY rental_duration DESC) as a inner join
+(select film_id, count(film_id) as film_total, store_id from inventory group by film_id) as b on a.film_id = b.film_id group by store_id;
+
+
 
 #7g
 SELECT 
@@ -217,8 +224,6 @@ select * from TOP_five_GenreList
 drop view if exists Top_five_GenreList
 
 --
-
-
 
 
 
